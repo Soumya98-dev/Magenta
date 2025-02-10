@@ -42,7 +42,48 @@ class GameScene: SKScene {
     }
     
     func setupBackground() {
-//        background1 = SKSpriteNode
+        background1 = SKSpriteNode(imageNamed: "first_background")
+        background1.position = CGPoint(x:size.width/2,y:size.height/2)
+        background1.size = self.size
+        background1.zPosition = -1
+        addChild(background1)
+        
+        background2 = background1.copy() as! SKSpriteNode
+        background2.position = CGPoint(x:background1.position.x + background1.size.width, y:background1.position.y)
+        addChild(background2)
+    }
+    
+    func setupCharacter() {
+        character = SKSpriteNode(imageNamed: "character_run_1")
+        character.position = CGPoint(x:size.width/4,y:size.height/4)
+        character.setScale(0.5)
+        character.zPosition = 1
+        addChild(character)
+        
+        runCharacterAnimation()
+    }
+    
+    func runCharacterAnimation() {
+        let runTextures = [
+            SKTexture(imageNamed: "character_run_4"),
+            SKTexture(imageNamed: "character_run_2"),
+            SKTexture(imageNamed: "character_run_3"),
+            SKTexture(imageNamed: "character_run_5")
+        ]
+        
+        let runAction = SKAction.animate(with:runTextures, timePerFrame: 0.1)
+        let repeatRun = SKAction.repeatForever(runAction)
+        character.run(repeatRun)
+    }
+    
+    func startBackgroundScrolling() {
+        let moveLeft = SKAction.moveBy(x:-background1.size.width, y: 0, duration: 5)
+        let resetPosition = SKAction.moveBy(x: background1.size.width, y: 0, duration: 0)
+        let loopAction = SKAction.repeatForever(SKAction.sequence([moveLeft, resetPosition]))
+        
+        background1.run(loopAction)
+        background2.run(loopAction)
+        
     }
     
     func touchDown(atPoint pos : CGPoint) {

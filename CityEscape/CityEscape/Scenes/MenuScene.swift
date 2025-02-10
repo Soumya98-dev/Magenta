@@ -72,6 +72,7 @@ class MenuScene: SKScene {
                 mainMenuScene.scaleMode = .aspectFill
                 self.view?.presentScene(mainMenuScene, transition: SKTransition.fade(withDuration: 1.0))
             }
+            
         }
         
     }

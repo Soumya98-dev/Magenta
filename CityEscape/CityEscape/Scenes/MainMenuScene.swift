@@ -66,9 +66,9 @@ class MainMenuScene: SKScene {
             let location = touch.location(in: self)
             let touchedNode = atPoint(location)
             
-            if touchedNode.name == "startButton" {
+            if touchedNode.name == "startButton" || touchedNode.parent?.name == "startButton" {
                 print("Start Game")
-                let gameScene = GameScene(size:self.size)
+                let gameScene = GameScene(size: self.size)
                 gameScene.scaleMode = .aspectFill
                 self.view?.presentScene(gameScene, transition: SKTransition.fade(withDuration: 1.0))
             }
