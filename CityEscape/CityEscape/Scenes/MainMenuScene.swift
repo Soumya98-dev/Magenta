@@ -1,9 +1,3 @@
-//
-//  MainMenuScene.swift
-//  CityEscape
-//
-//  Created by Soumyadeep Chatterjee on 2/5/25.
-//
 
 import Foundation
 import SpriteKit
@@ -77,6 +71,13 @@ class MainMenuScene: SKScene {
                 let gameScene = GameScene(size:self.size)
                 gameScene.scaleMode = .aspectFill
                 self.view?.presentScene(gameScene, transition: SKTransition.fade(withDuration: 1.0))
+            }
+            
+            if touchedNode.name == "menuButton" || touchedNode.parent?.name == "menuButton" {
+                print("Menu Button Clicked")
+                let menuScene = MenuScene(size: self.size)
+                menuScene.scaleMode = .aspectFill
+                self.view?.presentScene(menuScene, transition: SKTransition.fade(withDuration: 1.0))
             }
         }
     }

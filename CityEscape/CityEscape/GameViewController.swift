@@ -1,9 +1,3 @@
-//
-//  GameViewController.swift
-//  CityEscape
-//
-//  Created by Soumyadeep Chatterjee on 2/5/25.
-//
 
 import UIKit
 import SpriteKit
