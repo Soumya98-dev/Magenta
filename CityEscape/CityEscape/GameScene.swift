@@ -138,8 +138,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         if (bodyA.categoryBitMask == 4 && bodyB.categoryBitMask == 2) ||
            (bodyA.categoryBitMask == 2 && bodyB.categoryBitMask == 4) {
-            print("Game Over!")
-            resetGame()
+            print("Game Over! Returning to Start Menu...")
+            goToStartMenu()
         }
     }
+    
+    func goToStartMenu() {
+        let menuScene = MainMenuScene(size: self.size)
+        menuScene.scaleMode = .aspectFill
+        self.view?.presentScene(menuScene, transition: SKTransition.crossFade(withDuration: 1.0))
+    }
+
+
 }
