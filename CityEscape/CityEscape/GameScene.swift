@@ -138,11 +138,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         if (bodyA.categoryBitMask == 4 && bodyB.categoryBitMask == 2) ||
            (bodyA.categoryBitMask == 2 && bodyB.categoryBitMask == 4) {
-            print("Game Over! Returning to Start Menu...")
-            goToStartMenu()
+            print("Game Over! Showing message before returning to Start Menu...")
+            showGameOverScreen()
         }
     }
     
+    func showGameOverScreen() {
+        let gameOverLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
+        gameOverLabel.text = "GAME OVER"
+        gameOverLabel.fontSize = 60
+        gameOverLabel.fontColor = .red
+        gameOverLabel.position = CGPoint(x: size.width / 2, y: size.height / 2)
+        gameOverLabel.zPosition = 5
+        addChild(gameOverLabel)
+
+        let wait = SKAction.wait(forDuration: 1.5)
+        let transitionToMenu = SKAction.run { [weak self] in
+            self?.goToStartMenu()
+        }
+        
+        let sequence = SKAction.sequence([wait, transitionToMenu])
+        run(sequence)
+    }
+
     func goToStartMenu() {
         let menuScene = MainMenuScene(size: self.size)
         menuScene.scaleMode = .aspectFill
