@@ -2,12 +2,18 @@ import SpriteKit
 import GameplayKit
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
+        
+    var gameOverDisplayed = false
+    var backgroundImages = ["first_background", "second_background", "third_background", "fourth_background"]
+    var currentBackgroundIndex = 0
+    var score = 0
+    var scoreLabel: SKLabelNode!
     
     var character: SKSpriteNode!
     var background1: SKSpriteNode!
     var background2: SKSpriteNode!
     
-    let jumpForce: CGFloat = 250.0
+    let jumpForce: CGFloat = 220.0
     var isOnGround = true
     
     override func didMove(to view: SKView) {
@@ -18,6 +24,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let spawnSequence = SKAction.sequence([spawn, delay])
         let repeatSpawn = SKAction.repeatForever(spawnSequence)
         run(repeatSpawn)
+        
+        scoreLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
+        scoreLabel.text = "Score: 0"
+        scoreLabel.fontSize = 40
+        scoreLabel.fontColor = .white
+        scoreLabel.position = CGPoint(x: size.width / 2, y: size.height - 50)
+        scoreLabel.zPosition = 5
+        addChild(scoreLabel)
         
         setupBackground()
         setupGround()
@@ -36,6 +50,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         background2.position = CGPoint(x: background1.position.x + background1.size.width, y: background1.position.y)
         addChild(background2)
     }
+    
+    func updateBackground() {
+        if currentBackgroundIndex < backgroundImages.count - 1 {
+            currentBackgroundIndex += 1
+            let newBackgroundTexture = SKTexture(imageNamed: backgroundImages[currentBackgroundIndex])
+
+            let fadeOut = SKAction.fadeOut(withDuration: 0.5)
+            let fadeIn = SKAction.fadeIn(withDuration: 0.5)
+            let changeTexture = SKAction.run {
+                self.background1.texture = newBackgroundTexture
+                self.background2.texture = newBackgroundTexture
+            }
+
+            let sequence = SKAction.sequence([fadeOut, changeTexture, fadeIn])
+            background1.run(sequence)
+            background2.run(sequence)
+        }
+    }
+
     
     func setupGround() {
         let ground = SKSpriteNode(color: .clear, size: CGSize(width: size.width, height: 20))
@@ -126,6 +159,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    override func update(_ currentTime: TimeInterval) {
+        score += 1
+        scoreLabel.text = "Score: \(score)"
+        
+        if score % 1000 == 0 {
+            updateBackground()
+        }
+    }
+
+    
     func didBegin(_ contact: SKPhysicsContact) {
         let bodyA = contact.bodyA
         let bodyB = contact.bodyB
@@ -144,6 +187,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func showGameOverScreen() {
+        if gameOverDisplayed { return }
+        gameOverDisplayed = true
+        
         let gameOverLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
         gameOverLabel.text = "GAME OVER"
         gameOverLabel.fontSize = 60
@@ -152,7 +198,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameOverLabel.zPosition = 5
         addChild(gameOverLabel)
 
-        let wait = SKAction.wait(forDuration: 1.5)
+        let wait = SKAction.wait(forDuration: 2.0) 
         let transitionToMenu = SKAction.run { [weak self] in
             self?.goToStartMenu()
         }
@@ -160,6 +206,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let sequence = SKAction.sequence([wait, transitionToMenu])
         run(sequence)
     }
+
 
     func goToStartMenu() {
         let menuScene = MainMenuScene(size: self.size)
