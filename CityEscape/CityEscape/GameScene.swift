@@ -151,15 +151,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func spawnObstacle() {
         let obstacle = Obstacle.createObstacle()
         obstacle.position = CGPoint(x: size.width + obstacle.size.width, y: size.height * 0.15)
-        obstacle.name = "obstacle"
         addChild(obstacle)
-
+        
         let moveLeft = SKAction.moveBy(x: -size.width - obstacle.size.width, y: 0, duration: 4.0)
         let remove = SKAction.removeFromParent()
         let sequence = SKAction.sequence([moveLeft, remove])
-
+        
         obstacle.run(sequence)
+        
+        if Int.random(in: 0..<5) == 0 {
+            let powerUp = PowerUp.createPowerUp()
+            powerUp.position = CGPoint(x: size.width + powerUp.size.width, y: size.height * 0.3)
+            addChild(powerUp)
+            powerUp.run(sequence)
+        }
     }
+
 
     func resetGame() {
         print("Game Over! Restarting...")
@@ -201,13 +208,32 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
         score += 1
         scoreLabel.text = "Score: \(score)"
-
+        
         if score % 1000 == 0 {
             updateBackground()
         }
+
+        if score % 3000 == 0 {
+            increaseDifficulty()
+        }
     }
+    
+    func increaseDifficulty() {
+        print("Increasing Difficulty!")
 
+        let newDuration = max(2.0, 4.0 - Double(score) / 5000)
+        let newDelay = max(1.5, 2.5 - Double(score) / 8000)
 
+        removeAllActions()
+        
+        let spawn = SKAction.run { [weak self] in self?.spawnObstacle() }
+        let delay = SKAction.wait(forDuration: newDelay)
+        let spawnSequence = SKAction.sequence([spawn, delay])
+        let repeatSpawn = SKAction.repeatForever(spawnSequence)
+        run(repeatSpawn)
+
+        print("New Obstacle Speed: \(newDuration) sec, New Spawn Rate: \(newDelay) sec")
+    }
 
     func didBegin(_ contact: SKPhysicsContact) {
         let bodyA = contact.bodyA
@@ -224,8 +250,43 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             print("Game Over! Showing message before returning to Start Menu...")
             showGameOverScreen()
         }
+        
+        if (bodyA.categoryBitMask == 8 && bodyB.categoryBitMask == 2) ||
+           (bodyA.categoryBitMask == 2 && bodyB.categoryBitMask == 8) {
+
+            let powerUpNode = bodyA.categoryBitMask == 8 ? bodyA.node : bodyB.node
+
+            if let powerUpNode = powerUpNode {
+                applyPowerUp(powerUpNode)
+                powerUpNode.removeFromParent()
+            }
+        }
+
+
+    }
+    
+    func applyPowerUp(_ node: SKNode) {
+        if node.name == "speed_boost" {
+            print("✅ Speed Boost Activated!")
+            character.physicsBody?.velocity.dx += 200
+
+        } else if node.name == "invincibility" {
+            print("✅ Invincibility Activated!")
+            
+            character.physicsBody?.contactTestBitMask = 0
+            
+            run(SKAction.sequence([
+                SKAction.wait(forDuration: 5.0),
+                SKAction.run {
+                    print("❌ Invincibility Expired!")
+                    self.character.physicsBody?.contactTestBitMask = 4
+                }
+            ]))
+        }
     }
 
+
+    
     func showGameOverScreen() {
         if gameOverDisplayed { return }
         gameOverDisplayed = true
