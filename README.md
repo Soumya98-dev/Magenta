@@ -14,9 +14,9 @@ Magenta is an iOS game built with SpriteKit. It challenges players with engaging
 
 ## Tech Stack
 
-Language: Swift
-Framework: SpriteKit
-Platform: iOS
+- Language: Swift
+- Framework: SpriteKit
+- Platform: iOS
 
 ## Installation
 
@@ -33,10 +33,10 @@ To run Magenta on your local machine:
 
 ## Future Improvements
 
-Add more levels
-Improve UI animations
-Implement leaderboard functionality
-Enhance sound effects
+- Add more levels
+- Improve UI animations
+- Implement leaderboard functionality
+- Enhance sound effects
 
 ## Contributing
 
