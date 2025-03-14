@@ -1,6 +1,6 @@
 # CityEscape
 
-Magenta is a visually captivating iOS game built with SpriteKit, featuring a modern and bold UI. Navigate through an engaging interface and dynamic levels for a smooth and immersive gaming experience.
+CityEscape is a visually captivating iOS game built with SpriteKit, featuring a modern and bold UI. Navigate through an engaging interface and dynamic levels for a smooth and immersive gaming experience.
 
 ## Game UI Preview
 
@@ -21,7 +21,7 @@ Magenta is a visually captivating iOS game built with SpriteKit, featuring a mod
 
 ## Installation
 
-To run Magenta on your local machine:
+To run CityEscape on your local machine:
 
 - Clone the repository:
 
